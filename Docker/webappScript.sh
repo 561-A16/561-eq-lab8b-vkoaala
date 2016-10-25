@@ -1,2 +1,8 @@
+#!bin/bash
+
+cd src/webapp
 dotnet restore
-dotnet run
+
+cd ../webapp.unittests
+dotnet restore
+dotnet test
