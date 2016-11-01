@@ -1,14 +1,25 @@
+only:
+ - master
+
+cache:
+ directories:
+  - $PWD/packages
+
 sudo: required
 
-language: csharp
-
 services:
+  - docker
 
- - docker
+before_install: 
+ - ssh-copy-id -i rsa_id u1463181@159.203.33.172
+ - openssl aes-256-cbc -K $<var_env_encrypted_key> -iv $<var_env_encrypted_iv> -in digital_ocean.enc -out digital_ocean -d 
+ - eval "$(ssh-agent -s)" 
+ - chmod 600 digital_ocean
+ - ssh-add digital_ocean
 
-before_install:
- - docker build -t webapp:test .
 
 script:
+  - export CD_PATH = $PWD/publish
+  - docker run -it --rm -v $PWD/publish:/root/publish -v $PWD/packages:/root/.nuget/packages webapp:test
+  
 
- - docker run -it --rm -v $PWD/packages:/root/.nuget/packages webapp:test

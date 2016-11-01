@@ -1,12 +1,8 @@
 #!bin/bash
-
-
-set -e
-
+set -ev
 dotnet restore
-
 dotnet test ./webapp.unittests
+rm -rf $HOME/publish/*
+#cd webapp
 
-cd webapp
-
-dotnet publish --output $HOME/publish
+dotnet publish ./webapp --configuration release --output $HOME/publish
